@@ -1,6 +1,9 @@
 import json
-import threading
+import time
 from api_client import FoxholeAPI
+
+# Define the absolute path to the war_reports.json file
+WAR_REPORTS_PATH = "/home/ShaneeexD/FoxholeMapViewerAPI/war_reports.json"
 
 AVAILABLE_MAPS = [
     "Acrithia", "AllodsBight", "AshFields", "BasinSionnach", "CallahansPassage",
@@ -37,7 +40,7 @@ def update_war_reports():
     # Load existing reports
     reports = []
     try:
-        with open("war_reports.json", "r") as f:
+        with open(WAR_REPORTS_PATH, "r") as f:
             existing_data = json.load(f)
             reports = existing_data.get('reports', [])
             print(f"Loaded {len(reports)} existing reports")
@@ -55,17 +58,15 @@ def update_war_reports():
     
     # Save updated reports to file
     try:
-        with open("war_reports.json", "w") as f:
+        with open(WAR_REPORTS_PATH, "w") as f:
             json.dump({'reports': reports}, f)
         print("Successfully updated war_reports.json")
     except Exception as e:
         print(f"Error saving war reports: {e}")
 
-def schedule_update():
-    """Schedule the next update in 10 minutes"""
-    threading.Timer(600, schedule_update).start()
-    update_war_reports()
-
 if __name__ == "__main__":
     print("Starting war reports updater. Updates will run every 10 minutes.")
-    schedule_update()
+    while True:
+        update_war_reports()
+        print("Waiting for 10 minutes before the next update...")
+        time.sleep(600)  # Wait for 10 minutes (600 seconds)
