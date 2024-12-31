@@ -26,26 +26,17 @@ A desktop application that displays real-time map data from the Foxhole game usi
 pip install -r requirements.txt
 ```
 
-2. Add map images:
-   - Create a `maps` folder in the project directory
-   - Add map images in WebP or PNG format
-   - Name format: `Map<RegionName>.webp` or `Map<RegionName>.png` (e.g., `MapKalokaiHex.webp` or `MapKalokaiHex.png`)
-
-3. Run the application:
+2. Run the application:
 ```bash
 python main.py
 ```
 
 ## Running the Application
-You can run the application in two ways:
+Double-click the `main.py` file
 
-1. Double-click the `run_viewer.bat` file
-2. Or run manually with:
-```bash
-venv2/Scripts/python main.py
-```
 
 ## Map Images
+- ONLY IF YOU WANT TO REPLACE THE EXISTING ONES
 - Place map images in the `maps` directory
 - Images can be in WebP, PNG, or TGA format
 - Naming convention: `Map<RegionName>.(webp|png|tga)`
@@ -63,6 +54,7 @@ This application uses the Foxhole War API:
 - Zoom: Use mouse wheel to zoom in/out
 - Pan: Click and drag with left mouse button
 - Info: Hover over icons for detailed information
+- Range: Certain structures are clickable which will show range information
 
 ## License
 MIT License
