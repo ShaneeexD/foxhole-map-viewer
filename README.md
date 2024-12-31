@@ -49,13 +49,17 @@ This application uses the Foxhole War API, and my own for CPH calculations:
 - Base URL: https://war-service-live.foxholeservices.com/api/
 - Map Data Endpoint: /worldconquest/maps/{mapName}/dynamic/public
 - War Report Endpoint: /warReport/{mapName}
-- CPH War Report (6 Reports, updated every 10 minutes): https://foxholemapviewerapi-shaneeexd.pythonanywhere.com
+- CPH War Report (Last 6 War Reports, updated every 10 minutes): https://foxholemapviewerapi-shaneeexd.pythonanywhere.com
 
 ## Map Controls
 - Zoom: Use mouse wheel to zoom in/out
 - Pan: Click and drag with left mouse button
 - Info: Hover over icons for detailed information
 - Range: Certain structures are clickable which will show range information
+
+## Preview
+
+![Uploading image.png…]()
 
 ## License
 MIT License
