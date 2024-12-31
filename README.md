@@ -59,7 +59,7 @@ This application uses the Foxhole War API, and my own for CPH calculations:
 
 ## Preview
 
-![Uploading image.png…]()
+![image](https://github.com/user-attachments/assets/fc57b294-4e2f-4709-9110-b86d870f0bff)
 
 ## License
 MIT License
