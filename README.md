@@ -36,7 +36,7 @@ Double-click the `main.py` file
 
 
 ## Map Images
-- ONLY IF YOU WANT TO REPLACE THE EXISTING ONES
+#ONLY IF YOU WANT TO REPLACE THE EXISTING ONES
 - Place map images in the `maps` directory
 - Images can be in WebP, PNG, or TGA format
 - Naming convention: `Map<RegionName>.(webp|png|tga)`
