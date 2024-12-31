@@ -45,10 +45,11 @@ Double-click the `main.py` file
 - Format preference order: WebP (best compression) > PNG > TGA
 
 ## API Reference
-This application uses the Foxhole War API:
+This application uses the Foxhole War API, and my own for CPH calculations:
 - Base URL: https://war-service-live.foxholeservices.com/api/
 - Map Data Endpoint: /worldconquest/maps/{mapName}/dynamic/public
 - War Report Endpoint: /warReport/{mapName}
+- CPH War Report (6 Reports, updated every 10 minutes): https://foxholemapviewerapi-shaneeexd.pythonanywhere.com
 
 ## Map Controls
 - Zoom: Use mouse wheel to zoom in/out
