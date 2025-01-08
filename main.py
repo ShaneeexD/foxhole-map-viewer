@@ -51,6 +51,7 @@ class MapView(QWidget):
         if self.current_map != map_name:
             self.current_map = map_name
             self.load_map_image(map_name)
+            self.selected_structure = None
             # Always fetch static data when map changes, ETags will handle caching
             self.static_map_data = self.api.get_static_map_data(map_name)
         self.update()
@@ -778,6 +779,32 @@ class MapViewer(QMainWindow):
             elif item['teamId'] == 'COLONIALS':
                 counts['COLONIALS'] += 1
         return counts
+    
+    def count_all_structures(self):
+        """Count structures across all maps and calculate control percentages"""
+        total_warden = 0
+        total_colonial = 0
+        
+        for map_name in self.AVAILABLE_MAPS:
+            counts = self.count_structures(map_name)
+            total_warden += counts['WARDENS']
+            total_colonial += counts['COLONIALS']
+            
+        total_structures = total_warden + total_colonial
+        
+        if total_structures > 0:
+            warden_percent = (total_warden / total_structures) * 100
+            colonial_percent = (total_colonial / total_structures) * 100
+        else:
+            warden_percent = 0
+            colonial_percent = 0
+            
+        return {
+            'WARDENS': total_warden,
+            'COLONIALS': total_colonial,
+            'WARDEN_PERCENT': warden_percent,
+            'COLONIAL_PERCENT': colonial_percent
+        }
 
     def update_war_reports(self):
         """Fetch war reports from remote server and update the combo box with indicators and faction control colors"""
@@ -834,6 +861,17 @@ class MapViewer(QMainWindow):
             display_text = f"{map_name} {indicator}" if indicator else map_name
             self.map_combo.addItem(display_text)
             self.map_combo.setItemData(self.map_combo.count() - 1, QColor(color), Qt.ForegroundRole)
+                       
+        total_structure_counts = self.count_all_structures()
+           
+        self.map_control_percentage_label_colonial.setText(
+            f"Colonial Control: {total_structure_counts['COLONIAL_PERCENT']:.1f}% ({total_structure_counts['COLONIALS']:,} structures)"
+        )
+        self.map_control_percentage_label_warden.setText(
+            f"Warden Control: {total_structure_counts['WARDEN_PERCENT']:.1f}% ({total_structure_counts['WARDENS']:,} structures)"
+        )
+
+
                 
         # Restore the previous selection
         for i in range(self.map_combo.count()):
@@ -844,7 +882,7 @@ class MapViewer(QMainWindow):
 
     def init_ui(self):
         self.setWindowTitle('Foxhole Map Viewer')
-        self.setGeometry(100, 100, 1200, 800)
+        self.setGeometry(100, 100, 1400, 800)
 
         # Create main widget and layout
         main_widget = QWidget()
@@ -928,6 +966,19 @@ class MapViewer(QMainWindow):
         left_layout.addWidget(QLabel("Map Information:"))
         left_layout.addWidget(self.info_display)
 
+        # Overall War Info Display
+        overall_war_report_group = QWidget()
+        overall_war_report_layout = QVBoxLayout(overall_war_report_group)
+        overall_war_report_layout.addWidget(QLabel("Overall War Statistics"))
+
+        self.total_casualties_label = QLabel("Total Casulties: -")
+        self.map_control_percentage_label_colonial = QLabel("Colonial Control: -")
+        self.map_control_percentage_label_warden = QLabel("Warden Control: -")
+        overall_war_report_layout.addWidget(self.total_casualties_label)
+        overall_war_report_layout.addWidget(self.map_control_percentage_label_colonial)
+        overall_war_report_layout.addWidget(self.map_control_percentage_label_warden)
+        left_layout.addWidget(overall_war_report_group)
+
         # Add left panel to splitter
         left_panel_scroll = QScrollArea()
         left_panel_scroll.setWidget(left_panel)
@@ -958,6 +1009,23 @@ class MapViewer(QMainWindow):
             self.current_map = self.get_api_map_name(map_name)
         self.update_map_data()
 
+    def calculate_total_casualties(self):
+        """Calculate total casualties across all maps"""
+        total_colonial = 0
+        total_warden = 0
+        
+        if not self.previous_war_reports:
+            return (total_colonial, total_warden)
+            
+        # Get the latest report
+        latest_report = self.previous_war_reports[-1]
+        
+        for map_name, report in latest_report.items():
+            total_colonial += report.get('colonialCasualties', 0)
+            total_warden += report.get('wardenCasualties', 0)
+            
+        return (total_colonial, total_warden)
+
     def update_war_report(self):
         """Update the war report display with the latest data"""
         if not self.current_map:
@@ -966,9 +1034,16 @@ class MapViewer(QMainWindow):
         try:
             self.war_report = self.api.get_war_report(self.current_map)
             
+            # Update individual map statistics
             self.total_enlistments_label.setText(f"Total Enlistments: {self.war_report.get('totalEnlistments', '-')}")
             self.colonial_casualties_label.setText(f"Colonial Casualties: {self.war_report.get('colonialCasualties', '-')}")
             self.warden_casualties_label.setText(f"Warden Casualties: {self.war_report.get('wardenCasualties', '-')}")
+            
+            # Update total casualties with formatted numbers
+            total_colonial, total_warden = self.calculate_total_casualties()
+            formatted_colonial = "{:,}".format(total_colonial)
+            formatted_warden = "{:,}".format(total_warden)
+            self.total_casualties_label.setText(f"Total Casualties: C {formatted_colonial} | W {formatted_warden}")
             
             # Calculate and display CPH values with colored labels
             colonial_cph, warden_cph = self.get_casualties_per_hour(self.current_map)
