@@ -161,7 +161,8 @@ TEAM_COLORED_STRUCTURES = {
     IconType.SHIPYARD,
     IconType.STORAGE_FACILITY,
     IconType.FACILITY_MINE_OIL_RIG,
-    IconType.HOSPITAL
+    IconType.HOSPITAL,
+    IconType.WEATHER_STATION
 }
 
 # Lists of structures with specific colors
@@ -230,6 +231,10 @@ STRUCTURE_RANGES = {
     IconType.COASTAL_GUN: {
         'outer': 0.09,
         'inner': 0.07
+    },
+    IconType.STORM_CANNON: {
+        'outer': 0.595,
+        'inner': 0.460
     },
     IconType.GARRISON_STATION: 0.045,
     IconType.TOWN_BASE_1: 0.067,
